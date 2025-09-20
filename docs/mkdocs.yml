@@ -1,10 +1,34 @@
-site_name: PACKAGE
-site_description: A Water Template
+site_name: vid2txt
+site_description: Video to Text Transcription
 site_author: Ahmed Salim
-site_url: https://ahmedsalim.github.io/watertemplate
+site_url: https://ahmedsalim3.github.io/vid2txt
 
 theme:
-  name: readthedocs
-  language: en
+  name: material
+  palette:
+    - scheme: default
+      primary: white
+      accent: blue
+  features:
+    - search.highlight
+    - content.code.copy
+    - toc.integrate
+  font:
+    text: Inter
+    code: JetBrains Mono
+  navigation:
+    hide: true
 
 docs_dir: docs
+
+plugins:
+  - search
+  
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.details
+  - toc:
+      permalink: true
