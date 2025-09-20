@@ -1,0 +1,71 @@
+1
+00:00:00,640 --> 00:00:03,840
+It's true that assembly AI lets you build powerful apps with voice
+
+2
+00:00:03,840 --> 00:00:07,840
+data, but is voice really the right word? Maybe
+
+3
+00:00:07,840 --> 00:00:11,440
+words, but words on their own are just that, words.
+
+4
+00:00:12,320 --> 00:00:15,520
+Audio, we hear you. The hearing is
+
+5
+00:00:15,520 --> 00:00:18,600
+just a fraction of it. Stack it up and you
+
+6
+00:00:18,600 --> 00:00:21,600
+might get closer. But it's more than what we can
+
+7
+00:00:21,600 --> 00:00:24,640
+see or hear. It's something in between, around
+
+8
+00:00:24,640 --> 00:00:28,080
+and beneath all of that speech.
+
+9
+00:00:29,040 --> 00:00:32,340
+Speech is more than what you say, it's what you mean. And
+
+10
+00:00:32,340 --> 00:00:35,500
+more than the data. The models and. The benchmarks. That's
+
+11
+00:00:35,500 --> 00:00:38,540
+what we're excited by at Assembly, AI meaning.
+
+12
+00:00:38,860 --> 00:00:41,980
+And all of the possibilities that come with it. It's
+
+13
+00:00:41,980 --> 00:00:45,020
+why we've built industry leading AI models for speech to
+
+14
+00:00:45,020 --> 00:00:48,299
+text and speech understanding. They give you richer. Data,
+
+15
+00:00:48,540 --> 00:00:51,580
+incredible accuracy and deeper understanding
+
+16
+00:00:52,060 --> 00:00:55,140
+so you can get to the meaning behind voice data and.
+
+17
+00:00:55,140 --> 00:00:58,260
+Build products that are more than just. Powerful, they're
+
+18
+00:00:58,260 --> 00:00:58,860
+meaningful.
