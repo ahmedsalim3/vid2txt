@@ -155,7 +155,7 @@ hide:
   }
 </style>
 
-## Vid2Txt
+## [Vid2Txt](https://github.com/ahmedsalim3/vid2txt)
 
 A Python package for transcribing videos/audios to text using various speech-to-text services. Currently supports AssemblyAI for high-quality transcription.
 
@@ -174,40 +174,6 @@ A Python package for transcribing videos/audios to text using various speech-to-
 ## Examples
 
 <div class="examples-container">
-  <div class="examples-carousel">
-    <div class="examples-slides" id="examplesSlides">
-      
-      <!-- Example 1: Arabic YouTube -->
-      <div class="example-slide">
-        <div class="example-info">
-          <h3 class="example-title">Arabic Video</h3>
-          <p class="example-description">Transcription of an Arabic news with RTL text support</p>
-        </div>
-        <iframe src="https://raw.githubusercontent.com/ahmedsalim3/vid2text/refs/heads/main/example/arabic/بـ ＂خدعة＂ من الموساد.. إسرائيل استهدفت جميع قيادات الصواريخ في إيران.html"></iframe>
-      </div>
-      
-      <!-- Example 2: Rick Astley (4K Remaster) -->
-      <div class="example-slide">
-        <div class="example-info">
-          <h3 class="example-title">Rick Astley - Never Gonna Give You Up</h3>
-          <p class="example-description">Classic YouTube video transcription with synchronized subtitles</p>
-        </div>
-        <iframe src="https://raw.githubusercontent.com/ahmedsalim3/vid2text/refs/heads/main/example/english/Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).html"></iframe>
-      </div>
-      
-      <!-- Example 3: YouTube Alternative -->
-      <div class="example-slide">
-        <div class="example-info">
-          <h3 class="example-title">YouTube Video Alternative View</h3>
-          <p class="example-description">Another view of the Rick Astley video transcription</p>
-        </div>
-        <iframe src="https://raw.githubusercontent.com/ahmedsalim3/vid2text/refs/heads/main/example/assemblyai/assemblyai.html"></iframe>
-      </div>
-      
-    </div>
-  </div>
-  
-  <!-- Navigation Controls -->
   <div class="carousel-nav">
     <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">
       ← Previous
@@ -223,6 +189,35 @@ A Python package for transcribing videos/audios to text using various speech-to-
     <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">
       Next →
     </button>
+  </div>
+  <div class="examples-carousel">
+    <div class="examples-slides" id="examplesSlides">
+      
+      <div class="example-slide">
+        <div class="example-info">
+          <h3 class="example-title">Arabic Video</h3>
+          <p class="example-description">Transcription of an Arabic news with RTL text support</p>
+        </div>
+        <iframe src="./examples/arabic/arabic_example.html"></iframe>
+      </div>
+      
+      <div class="example-slide">
+        <div class="example-info">
+          <h3 class="example-title">Rick Astley - Never Gonna Give You Up</h3>
+          <p class="example-description">Classic YouTube video transcription with subtitles</p>
+        </div>
+        <iframe src="./examples/english/rick_astley_example.html"></iframe>
+      </div>
+      
+      <div class="example-slide">
+        <div class="example-info">
+          <h3 class="example-title">Assembly AI</h3>
+          <p class="example-description">Overview video on Assembly AI</p>
+        </div>
+        <iframe src="./examples/assemblyai/assemblyai.html"></iframe>
+      </div>
+      
+    </div>
   </div>
 </div>
 
