@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Vid2Txt</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f8f9fa;
+      color: #333;
+      padding: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .container {
+      display: flex;
+      gap: 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .player,
+    .transcript {
+      flex: 1 1 300px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .player {
+      position: sticky;
+      top: 1rem;
+      height: fit-content;
+    }
+
+    video, audio {
+      width: 100%;
+      border-radius: 4px;
+    }
+    
+    audio {
+      height: 40px;
+    }
+
+    #searchBox {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .transcript {
+      max-height: 80vh;
+      overflow-y: auto;
+      border-left: 1px solid #ddd;
+      padding-right: 0.5rem;
+    }
+
+    .segment {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: background 0.2s, border-color 0.2s;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .segment:hover {
+      background: #f0f8ff;
+      border-left-color: #0077cc;
+    }
+
+    .segment.active {
+      background: #e3f2fd;
+      border-left-color: #2196f3;
+    }
+
+    .timestamp {
+      color: #0077cc;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      font-size: 0.9em;
+    }
+
+    .text {
+      line-height: 1.5;
+      flex: 1;
+    }
+
+
+    /* RTL */
+    .rtl {
+      direction: rtl;
+      text-align: right;
+    }
+
+    .rtl .segment {
+      border-left: none;
+      border-right: 3px solid transparent;
+    }
+
+    .rtl .segment:hover {
+      border-right-color: #0077cc;
+    }
+
+    .rtl .segment.active {
+      border-right-color: #2196f3;
+    }
+
+    .rtl .timestamp {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+
+    .rtl .transcript {
+      border-left: none;
+      border-right: 1px solid #ddd;
+      padding-left: 0;
+      padding-right: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .player {
+        position: relative;
+        top: auto;
+      }
+
+      .transcript {
+        max-height: 400px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Vid2Txt</h1>
+  <div class="container">
+    <div class="player">
+      
+      <video id="player" controls>
+        <source src="assemblyai.mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+      
+    </div>
+
+    <div class="transcript ">
+      <input type="text" id="searchBox" placeholder="Search transcript..." />
+      <div id="segmentsContainer">
+        
+        <div class="segment" data-start="0.64">
+          <span class="timestamp">[00:00:00.640]</span>
+          <span class="text">It&#39;s true that assembly AI lets you build powerful apps with voice</span>
+        </div>
+        
+        <div class="segment" data-start="3.84">
+          <span class="timestamp">[00:00:03.840]</span>
+          <span class="text">data, but is voice really the right word? Maybe</span>
+        </div>
+        
+        <div class="segment" data-start="7.84">
+          <span class="timestamp">[00:00:07.840]</span>
+          <span class="text">words, but words on their own are just that, words.</span>
+        </div>
+        
+        <div class="segment" data-start="12.32">
+          <span class="timestamp">[00:00:12.320]</span>
+          <span class="text">Audio, we hear you. The hearing is</span>
+        </div>
+        
+        <div class="segment" data-start="15.52">
+          <span class="timestamp">[00:00:15.520]</span>
+          <span class="text">just a fraction of it. Stack it up and you</span>
+        </div>
+        
+        <div class="segment" data-start="18.6">
+          <span class="timestamp">[00:00:18.600]</span>
+          <span class="text">might get closer. But it&#39;s more than what we can</span>
+        </div>
+        
+        <div class="segment" data-start="21.6">
+          <span class="timestamp">[00:00:21.600]</span>
+          <span class="text">see or hear. It&#39;s something in between, around</span>
+        </div>
+        
+        <div class="segment" data-start="24.64">
+          <span class="timestamp">[00:00:24.640]</span>
+          <span class="text">and beneath all of that speech.</span>
+        </div>
+        
+        <div class="segment" data-start="29.04">
+          <span class="timestamp">[00:00:29.040]</span>
+          <span class="text">Speech is more than what you say, it&#39;s what you mean. And</span>
+        </div>
+        
+        <div class="segment" data-start="32.34">
+          <span class="timestamp">[00:00:32.340]</span>
+          <span class="text">more than the data. The models and. The benchmarks. That&#39;s</span>
+        </div>
+        
+        <div class="segment" data-start="35.5">
+          <span class="timestamp">[00:00:35.500]</span>
+          <span class="text">what we&#39;re excited by at Assembly, AI meaning.</span>
+        </div>
+        
+        <div class="segment" data-start="38.86">
+          <span class="timestamp">[00:00:38.860]</span>
+          <span class="text">And all of the possibilities that come with it. It&#39;s</span>
+        </div>
+        
+        <div class="segment" data-start="41.98">
+          <span class="timestamp">[00:00:41.980]</span>
+          <span class="text">why we&#39;ve built industry leading AI models for speech to</span>
+        </div>
+        
+        <div class="segment" data-start="45.02">
+          <span class="timestamp">[00:00:45.020]</span>
+          <span class="text">text and speech understanding. They give you richer. Data,</span>
+        </div>
+        
+        <div class="segment" data-start="48.54">
+          <span class="timestamp">[00:00:48.540]</span>
+          <span class="text">incredible accuracy and deeper understanding</span>
+        </div>
+        
+        <div class="segment" data-start="52.06">
+          <span class="timestamp">[00:00:52.060]</span>
+          <span class="text">so you can get to the meaning behind voice data and.</span>
+        </div>
+        
+        <div class="segment" data-start="55.14">
+          <span class="timestamp">[00:00:55.140]</span>
+          <span class="text">Build products that are more than just. Powerful, they&#39;re</span>
+        </div>
+        
+        <div class="segment" data-start="58.26">
+          <span class="timestamp">[00:00:58.260]</span>
+          <span class="text">meaningful.</span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const player = document.getElementById('player');
+    const segmentsContainer = document.getElementById('segmentsContainer');
+    const segments = Array.from(document.querySelectorAll('.segment')).map(el => ({
+      el,
+      start: parseFloat(el.dataset.start || 0)
+    }));
+
+    segments.forEach(s => {
+      s.el.addEventListener('click', e => {
+        player.currentTime = s.start;
+        player.play();
+      });
+    });
+
+    function highlight() {
+    const t = player.currentTime;
+    let active = null;
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+      const next = segments[i + 1];
+      if (t >= s.start && (!next || t < next.start)) {
+        active = s;
+        break;
+      }
+    }
+    segments.forEach(s => s.el.classList.toggle('active', s === active));
+    if (active) {
+      const container = document.querySelector('.transcript');
+      const rect = active.el.offsetTop;
+      const containerScroll = container.scrollTop;
+      const containerHeight = container.clientHeight;
+
+      if (rect < containerScroll || rect > containerScroll + containerHeight - active.el.clientHeight) {
+        container.scrollTo({
+          top: rect - containerHeight / 2,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+
+    player.addEventListener('timeupdate', highlight);
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'ArrowLeft') player.currentTime = Math.max(0, player.currentTime - 10);
+      if (e.code === 'ArrowRight') player.currentTime = Math.min(player.duration, player.currentTime + 10);
+    });
+
+    const searchBox = document.getElementById('searchBox');
+    searchBox.addEventListener('input', () => {
+      const query = searchBox.value.toLowerCase();
+      segments.forEach(s => {
+        const visible = s.el.querySelector('.text').textContent.toLowerCase().includes(query);
+        s.el.style.display = visible ? '' : 'none';
+      });
+    });
+
+
+    highlight();
+  </script>
+</body>
+
+</html>

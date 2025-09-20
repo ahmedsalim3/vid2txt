@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Vid2Txt</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f8f9fa;
+      color: #333;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .container {
+      display: flex;
+      gap: 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .player,
+    .transcript {
+      flex: 1 1 300px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .player {
+      position: sticky;
+      top: 1rem;
+      height: fit-content;
+      min-width: 400px;
+    }
+    
+    /* Video container for consistent sizing */
+    .video-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9; /* Standard video aspect ratio */
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    /* Audio container for consistent sizing */
+    .audio-container {
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Maintains aspect ratio, letterboxes if needed */
+      background: #000;
+    }
+    
+    audio {
+      width: 100%;
+      height: 40px;
+    }
+    
+    #searchBox {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .transcript {
+      max-height: 80vh;
+      overflow-y: auto;
+      border-left: 1px solid #ddd;
+      padding-right: 0.5rem;
+    }
+    .segment {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: background 0.2s, border-color 0.2s;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .segment:hover {
+      background: #f0f8ff;
+      border-left-color: #0077cc;
+    }
+    .segment.active {
+      background: #e3f2fd;
+      border-left-color: #2196f3;
+    }
+    .timestamp {
+      color: #0077cc;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      font-size: 0.9em;
+    }
+    .text {
+      line-height: 1.5;
+      flex: 1;
+    }
+    /* RTL */
+    .rtl {
+      direction: rtl;
+      text-align: right;
+    }
+    .rtl .segment {
+      border-left: none;
+      border-right: 3px solid transparent;
+    }
+    .rtl .segment:hover {
+      border-right-color: #0077cc;
+    }
+    .rtl .segment.active {
+      border-right-color: #2196f3;
+    }
+    .rtl .timestamp {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+    .rtl .transcript {
+      border-left: none;
+      border-right: 1px solid #ddd;
+      padding-left: 0;
+      padding-right: 1rem;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+      .player {
+        position: relative;
+        top: auto;
+        min-width: auto;
+      }
+      .video-container {
+        aspect-ratio: 16/9; /* Maintain aspect ratio on mobile */
+      }
+      .transcript {
+        max-height: 400px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 0.5rem;
+      }
+      .player {
+        min-width: auto;
+      }
+      .video-container {
+        aspect-ratio: 16/9;
+      }
+      .transcript {
+        max-height: 300px;
+      }
+    }
+    
+    /* Small screens - maintain video aspect ratio */
+    @media (max-width: 480px) {
+      .video-container {
+        aspect-ratio: 4/3; /* Slightly more square for very small screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Vid2Txt</h1>
+  <div class="container">
+    <div class="player">
+      
+      <div class="video-container">
+        <video id="player" controls>
+          <source src="بـ ＂خدعة＂ من الموساد.. إسرائيل استهدفت جميع قيادات الصواريخ في إيران.mp4" />
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+      
+    </div>
+    <div class="transcript rtl">
+      <input type="text" id="searchBox" placeholder="Search transcript..." />
+      <div id="segmentsContainer">
+        
+        <div class="segment" data-start="0.008">
+          <span class="timestamp">[00:00:00.008]</span>
+          <span class="text">الموساد نفذ خدعة ذكية لمنع</span>
+        </div>
+        
+        <div class="segment" data-start="3.528">
+          <span class="timestamp">[00:00:03.528]</span>
+          <span class="text">إيران من إطلاق ألف ساروخ وجمع</span>
+        </div>
+        
+        <div class="segment" data-start="7.368">
+          <span class="timestamp">[00:00:07.368]</span>
+          <span class="text">قيادات وحدات السواريخ الإيرانية في</span>
+        </div>
+        
+        <div class="segment" data-start="10.528">
+          <span class="timestamp">[00:00:10.528]</span>
+          <span class="text">ملجأ واحد وقضى عليهم بضربة واحدة</span>
+        </div>
+        
+        <div class="segment" data-start="13.868">
+          <span class="timestamp">[00:00:13.868]</span>
+          <span class="text">تفاصيل جديدة ومثيرة تكشفها</span>
+        </div>
+        
+        <div class="segment" data-start="17.008">
+          <span class="timestamp">[00:00:17.008]</span>
+          <span class="text">صحيفة جويش كرونيكل حول العملية</span>
+        </div>
+        
+        <div class="segment" data-start="20.208">
+          <span class="timestamp">[00:00:20.208]</span>
+          <span class="text">الجريئة التي نفذها الموساد الإسرائيلي في</span>
+        </div>
+        
+        <div class="segment" data-start="23.288">
+          <span class="timestamp">[00:00:23.288]</span>
+          <span class="text">طهران فكيف بدأت الخطة؟ بحسب</span>
+        </div>
+        
+        <div class="segment" data-start="26.378">
+          <span class="timestamp">[00:00:26.378]</span>
+          <span class="text">الصحيفة فإن عملاء الموساد راقبوا</span>
+        </div>
+        
+        <div class="segment" data-start="29.638">
+          <span class="timestamp">[00:00:29.638]</span>
+          <span class="text">لفترة طويلة سلوك القيادات الإيرانية وحللوا بعمق</span>
+        </div>
+        
+        <div class="segment" data-start="32.818">
+          <span class="timestamp">[00:00:32.818]</span>
+          <span class="text">روتينهم اليوم وردود أفعالهم في حالة الطوارئ</span>
+        </div>
+        
+        <div class="segment" data-start="36.018">
+          <span class="timestamp">[00:00:36.018]</span>
+          <span class="text">وكيفية تجميعهم في نقطة واحدة وبعد</span>
+        </div>
+        
+        <div class="segment" data-start="39.558">
+          <span class="timestamp">[00:00:39.558]</span>
+          <span class="text">جمع معلومات كافية أطلق الموساد مكالمة</span>
+        </div>
+        
+        <div class="segment" data-start="42.558">
+          <span class="timestamp">[00:00:42.558]</span>
+          <span class="text">هاتفية مزية فبدت وكأنها إنذار طارئ داخلي</span>
+        </div>
+        
+        <div class="segment" data-start="45.818">
+          <span class="timestamp">[00:00:45.818]</span>
+          <span class="text">أدت إلى توجه كامل للقيادة العليا</span>
+        </div>
+        
+        <div class="segment" data-start="48.978">
+          <span class="timestamp">[00:00:48.978]</span>
+          <span class="text">لوحدات السواريخ إلى ملجأ مركزي في تهران وخلال</span>
+        </div>
+        
+        <div class="segment" data-start="52.42">
+          <span class="timestamp">[00:00:52.420]</span>
+          <span class="text">دقائق قليلة وعندما أصبح القادة محاصرين داخل</span>
+        </div>
+        
+        <div class="segment" data-start="56.06">
+          <span class="timestamp">[00:00:56.060]</span>
+          <span class="text">الملجأ نفذت إسرائيل ضربتها الجوية</span>
+        </div>
+        
+        <div class="segment" data-start="59.32">
+          <span class="timestamp">[00:00:59.320]</span>
+          <span class="text">الدقيقة والتي قضت على جميع أفراد القيادة</span>
+        </div>
+        
+        <div class="segment" data-start="62.42">
+          <span class="timestamp">[00:01:02.420]</span>
+          <span class="text">الإيرانية في المكان تكشف الصحيفة</span>
+        </div>
+        
+        <div class="segment" data-start="65.66">
+          <span class="timestamp">[00:01:05.660]</span>
+          <span class="text">عن تفصيل دراماتيكي لم ينشر سابقا في</span>
+        </div>
+        
+        <div class="segment" data-start="68.74">
+          <span class="timestamp">[00:01:08.740]</span>
+          <span class="text">وسائل إعلام الإسرائيلية وهو أن الضربة حيدت</span>
+        </div>
+        
+        <div class="segment" data-start="71.92">
+          <span class="timestamp">[00:01:11.920]</span>
+          <span class="text">فعليا قدرة إيران على تنفيذ خطتها الهجومية التي</span>
+        </div>
+        
+        <div class="segment" data-start="75.42">
+          <span class="timestamp">[00:01:15.420]</span>
+          <span class="text">كانت تشمل إطلاق أكثر من ألف ساروخ باليستي نحو العمق</span>
+        </div>
+        
+        <div class="segment" data-start="78.64">
+          <span class="timestamp">[00:01:18.640]</span>
+          <span class="text">الإسرائيلي فبعد مقتل القادة</span>
+        </div>
+        
+        <div class="segment" data-start="81.691">
+          <span class="timestamp">[00:01:21.691]</span>
+          <span class="text">الإيرانيين لم يتبقى فعلياً أي مسؤول رفيع يمكنه إصدار</span>
+        </div>
+        
+        <div class="segment" data-start="84.971">
+          <span class="timestamp">[00:01:24.971]</span>
+          <span class="text">الأمر بتنفيذ الهجوم وتزعم الصحيفة أن العملية</span>
+        </div>
+        
+        <div class="segment" data-start="88.391">
+          <span class="timestamp">[00:01:28.391]</span>
+          <span class="text">تبرز قدرة الاستخبارات الإسرائيلية الاستثنائية</span>
+        </div>
+        
+        <div class="segment" data-start="91.531">
+          <span class="timestamp">[00:01:31.531]</span>
+          <span class="text">على المفاجأة وشل القيادة العسكرية العليا</span>
+        </div>
+        
+        <div class="segment" data-start="94.791">
+          <span class="timestamp">[00:01:34.791]</span>
+          <span class="text">للحارس الثوري.</span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <script>
+    const player = document.getElementById('player');
+    const segmentsContainer = document.getElementById('segmentsContainer');
+    const segments = Array.from(document.querySelectorAll('.segment')).map(el => ({
+      el,
+      start: parseFloat(el.dataset.start || 0)
+    }));
+    segments.forEach(s => {
+      s.el.addEventListener('click', e => {
+        player.currentTime = s.start;
+        player.play();
+      });
+    });
+    function highlight() {
+    const t = player.currentTime;
+    let active = null;
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+      const next = segments[i + 1];
+      if (t >= s.start && (!next || t < next.start)) {
+        active = s;
+        break;
+      }
+    }
+    segments.forEach(s => s.el.classList.toggle('active', s === active));
+    if (active) {
+      const container = document.querySelector('.transcript');
+      const rect = active.el.offsetTop;
+      const containerScroll = container.scrollTop;
+      const containerHeight = container.clientHeight;
+      if (rect < containerScroll || rect > containerScroll + containerHeight - active.el.clientHeight) {
+        container.scrollTo({
+          top: rect - containerHeight / 2,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+    player.addEventListener('timeupdate', highlight);
+    document.addEventListener('keydown', e => {
+      if (e.code === 'ArrowLeft') player.currentTime = Math.max(0, player.currentTime - 10);
+      if (e.code === 'ArrowRight') player.currentTime = Math.min(player.duration, player.currentTime + 10);
+    });
+    const searchBox = document.getElementById('searchBox');
+    searchBox.addEventListener('input', () => {
+      const query = searchBox.value.toLowerCase();
+      segments.forEach(s => {
+        const visible = s.el.querySelector('.text').textContent.toLowerCase().includes(query);
+        s.el.style.display = visible ? '' : 'none';
+      });
+    });
+    highlight();
+  </script>
+</body>
+</html>

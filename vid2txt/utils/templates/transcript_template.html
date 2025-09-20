@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Vid2Txt</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f8f9fa;
+      color: #333;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .container {
+      display: flex;
+      gap: 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .player,
+    .transcript {
+      flex: 1 1 300px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .player {
+      position: sticky;
+      top: 1rem;
+      height: fit-content;
+      min-width: 400px;
+    }
+    
+    /* Video container for consistent sizing */
+    .video-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9; /* Standard video aspect ratio */
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    /* Audio container for consistent sizing */
+    .audio-container {
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Maintains aspect ratio, letterboxes if needed */
+      background: #000;
+    }
+    
+    audio {
+      width: 100%;
+      height: 40px;
+    }
+    
+    #searchBox {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .transcript {
+      max-height: 80vh;
+      overflow-y: auto;
+      border-left: 1px solid #ddd;
+      padding-right: 0.5rem;
+    }
+    .segment {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: background 0.2s, border-color 0.2s;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .segment:hover {
+      background: #f0f8ff;
+      border-left-color: #0077cc;
+    }
+    .segment.active {
+      background: #e3f2fd;
+      border-left-color: #2196f3;
+    }
+    .timestamp {
+      color: #0077cc;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      font-size: 0.9em;
+    }
+    .text {
+      line-height: 1.5;
+      flex: 1;
+    }
+    /* RTL */
+    .rtl {
+      direction: rtl;
+      text-align: right;
+    }
+    .rtl .segment {
+      border-left: none;
+      border-right: 3px solid transparent;
+    }
+    .rtl .segment:hover {
+      border-right-color: #0077cc;
+    }
+    .rtl .segment.active {
+      border-right-color: #2196f3;
+    }
+    .rtl .timestamp {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+    .rtl .transcript {
+      border-left: none;
+      border-right: 1px solid #ddd;
+      padding-left: 0;
+      padding-right: 1rem;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+      .player {
+        position: relative;
+        top: auto;
+        min-width: auto;
+      }
+      .video-container {
+        aspect-ratio: 16/9; /* Maintain aspect ratio on mobile */
+      }
+      .transcript {
+        max-height: 400px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 0.5rem;
+      }
+      .player {
+        min-width: auto;
+      }
+      .video-container {
+        aspect-ratio: 16/9;
+      }
+      .transcript {
+        max-height: 300px;
+      }
+    }
+    
+    /* Small screens - maintain video aspect ratio */
+    @media (max-width: 480px) {
+      .video-container {
+        aspect-ratio: 4/3; /* Slightly more square for very small screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Vid2Txt</h1>
+  <div class="container">
+    <div class="player">
+      {% if is_audio %}
+      <div class="audio-container">
+        <audio id="player" controls>
+          <source src="{{ media_url | e }}" />
+          Your browser does not support HTML5 audio.
+        </audio>
+      </div>
+      {% else %}
+      <div class="video-container">
+        <video id="player" controls>
+          <source src="{{ media_url | e }}" />
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+      {% endif %}
+    </div>
+    <div class="transcript {{ 'rtl' if is_rtl else '' }}">
+      <input type="text" id="searchBox" placeholder="Search transcript..." />
+      <div id="segmentsContainer">
+        {% for seg in segments %}
+        <div class="segment" data-start="{{ seg.start }}">
+          <span class="timestamp">[{{ seg.formatted_start }}]</span>
+          <span class="text">{{ seg.text | e }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <script>
+    const player = document.getElementById('player');
+    const segmentsContainer = document.getElementById('segmentsContainer');
+    const segments = Array.from(document.querySelectorAll('.segment')).map(el => ({
+      el,
+      start: parseFloat(el.dataset.start || 0)
+    }));
+    segments.forEach(s => {
+      s.el.addEventListener('click', e => {
+        player.currentTime = s.start;
+        player.play();
+      });
+    });
+    function highlight() {
+    const t = player.currentTime;
+    let active = null;
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+      const next = segments[i + 1];
+      if (t >= s.start && (!next || t < next.start)) {
+        active = s;
+        break;
+      }
+    }
+    segments.forEach(s => s.el.classList.toggle('active', s === active));
+    if (active) {
+      const container = document.querySelector('.transcript');
+      const rect = active.el.offsetTop;
+      const containerScroll = container.scrollTop;
+      const containerHeight = container.clientHeight;
+      if (rect < containerScroll || rect > containerScroll + containerHeight - active.el.clientHeight) {
+        container.scrollTo({
+          top: rect - containerHeight / 2,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+    player.addEventListener('timeupdate', highlight);
+    document.addEventListener('keydown', e => {
+      if (e.code === 'ArrowLeft') player.currentTime = Math.max(0, player.currentTime - 10);
+      if (e.code === 'ArrowRight') player.currentTime = Math.min(player.duration, player.currentTime + 10);
+    });
+    const searchBox = document.getElementById('searchBox');
+    searchBox.addEventListener('input', () => {
+      const query = searchBox.value.toLowerCase();
+      segments.forEach(s => {
+        const visible = s.el.querySelector('.text').textContent.toLowerCase().includes(query);
+        s.el.style.display = visible ? '' : 'none';
+      });
+    });
+    highlight();
+  </script>
+</body>
+</html>

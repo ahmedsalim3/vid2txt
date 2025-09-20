@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Vid2Txt</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f8f9fa;
+      color: #333;
+      padding: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .container {
+      display: flex;
+      gap: 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .player,
+    .transcript {
+      flex: 1 1 300px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .player {
+      position: sticky;
+      top: 1rem;
+      height: fit-content;
+    }
+
+    video, audio {
+      width: 100%;
+      border-radius: 4px;
+    }
+    
+    audio {
+      height: 40px;
+    }
+
+    #searchBox {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .transcript {
+      max-height: 80vh;
+      overflow-y: auto;
+      border-left: 1px solid #ddd;
+      padding-right: 0.5rem;
+    }
+
+    .segment {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: background 0.2s, border-color 0.2s;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .segment:hover {
+      background: #f0f8ff;
+      border-left-color: #0077cc;
+    }
+
+    .segment.active {
+      background: #e3f2fd;
+      border-left-color: #2196f3;
+    }
+
+    .timestamp {
+      color: #0077cc;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      font-size: 0.9em;
+    }
+
+    .text {
+      line-height: 1.5;
+      flex: 1;
+    }
+
+
+    /* RTL */
+    .rtl {
+      direction: rtl;
+      text-align: right;
+    }
+
+    .rtl .segment {
+      border-left: none;
+      border-right: 3px solid transparent;
+    }
+
+    .rtl .segment:hover {
+      border-right-color: #0077cc;
+    }
+
+    .rtl .segment.active {
+      border-right-color: #2196f3;
+    }
+
+    .rtl .timestamp {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+
+    .rtl .transcript {
+      border-left: none;
+      border-right: 1px solid #ddd;
+      padding-left: 0;
+      padding-right: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .player {
+        position: relative;
+        top: auto;
+      }
+
+      .transcript {
+        max-height: 400px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Vid2Txt</h1>
+  <div class="container">
+    <div class="player">
+      
+      <video id="player" controls>
+        <source src="Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+      
+    </div>
+
+    <div class="transcript ">
+      <input type="text" id="searchBox" placeholder="Search transcript..." />
+      <div id="segmentsContainer">
+        
+        <div class="segment" data-start="18.8">
+          <span class="timestamp">[00:00:18.800]</span>
+          <span class="text">We&#39;re no strangers to love you</span>
+        </div>
+        
+        <div class="segment" data-start="22.96">
+          <span class="timestamp">[00:00:22.960]</span>
+          <span class="text">know the rules and so do I. I</span>
+        </div>
+        
+        <div class="segment" data-start="27.08">
+          <span class="timestamp">[00:00:27.080]</span>
+          <span class="text">feel commitments while I&#39;m thinking of you</span>
+        </div>
+        
+        <div class="segment" data-start="31.4">
+          <span class="timestamp">[00:00:31.400]</span>
+          <span class="text">wouldn&#39; get this from any other guy</span>
+        </div>
+        
+        <div class="segment" data-start="35.18">
+          <span class="timestamp">[00:00:35.180]</span>
+          <span class="text">I just want to tell you how I&#39;m</span>
+        </div>
+        
+        <div class="segment" data-start="38.38">
+          <span class="timestamp">[00:00:38.380]</span>
+          <span class="text">feeling Gotta make you</span>
+        </div>
+        
+        <div class="segment" data-start="41.74">
+          <span class="timestamp">[00:00:41.740]</span>
+          <span class="text">understand Never gonna give you up never</span>
+        </div>
+        
+        <div class="segment" data-start="45.38">
+          <span class="timestamp">[00:00:45.380]</span>
+          <span class="text">gonna let you down Never gonna run around</span>
+        </div>
+        
+        <div class="segment" data-start="49.02">
+          <span class="timestamp">[00:00:49.020]</span>
+          <span class="text">and desert you Never gonna</span>
+        </div>
+        
+        <div class="segment" data-start="52.1">
+          <span class="timestamp">[00:00:52.100]</span>
+          <span class="text">make you cry Never gonna say goodbye</span>
+        </div>
+        
+        <div class="segment" data-start="55.58">
+          <span class="timestamp">[00:00:55.580]</span>
+          <span class="text">Never gonna tell a lie and hurt</span>
+        </div>
+        
+        <div class="segment" data-start="58.86">
+          <span class="timestamp">[00:00:58.860]</span>
+          <span class="text">you We&#39;ve known your</span>
+        </div>
+        
+        <div class="segment" data-start="65.16">
+          <span class="timestamp">[00:01:05.160]</span>
+          <span class="text">heart&#39;s been aching but you&#39;re too shy to</span>
+        </div>
+        
+        <div class="segment" data-start="68.32">
+          <span class="timestamp">[00:01:08.320]</span>
+          <span class="text">say it inside we both know what&#39;s been going</span>
+        </div>
+        
+        <div class="segment" data-start="71.8">
+          <span class="timestamp">[00:01:11.800]</span>
+          <span class="text">on we know the game and we&#39;re</span>
+        </div>
+        
+        <div class="segment" data-start="75.48">
+          <span class="timestamp">[00:01:15.480]</span>
+          <span class="text">gonna play it and if</span>
+        </div>
+        
+        <div class="segment" data-start="78.92">
+          <span class="timestamp">[00:01:18.920]</span>
+          <span class="text">you ask me how I feeling don&#39;t</span>
+        </div>
+        
+        <div class="segment" data-start="82.64">
+          <span class="timestamp">[00:01:22.640]</span>
+          <span class="text">tell me you&#39;re too blind to see Never gonna</span>
+        </div>
+        
+        <div class="segment" data-start="85.92">
+          <span class="timestamp">[00:01:25.920]</span>
+          <span class="text">give you up never gonna let you down</span>
+        </div>
+        
+        <div class="segment" data-start="89.4">
+          <span class="timestamp">[00:01:29.400]</span>
+          <span class="text">Never gonna run around and desert</span>
+        </div>
+        
+        <div class="segment" data-start="92.6">
+          <span class="timestamp">[00:01:32.600]</span>
+          <span class="text">you Never gonn Never</span>
+        </div>
+        
+        <div class="segment" data-start="96.1">
+          <span class="timestamp">[00:01:36.100]</span>
+          <span class="text">gonna say goodbye Never gonna tell a</span>
+        </div>
+        
+        <div class="segment" data-start="99.3">
+          <span class="timestamp">[00:01:39.300]</span>
+          <span class="text">fight and hurt you Never</span>
+        </div>
+        
+        <div class="segment" data-start="102.42">
+          <span class="timestamp">[00:01:42.420]</span>
+          <span class="text">gonna give you up never gonna let you</span>
+        </div>
+        
+        <div class="segment" data-start="105.54">
+          <span class="timestamp">[00:01:45.540]</span>
+          <span class="text">down Never gonna run around and</span>
+        </div>
+        
+        <div class="segment" data-start="108.74">
+          <span class="timestamp">[00:01:48.740]</span>
+          <span class="text">desert you Never gonna make you</span>
+        </div>
+        
+        <div class="segment" data-start="111.779">
+          <span class="timestamp">[00:01:51.779]</span>
+          <span class="text">cry Never gonna say goodbye Never</span>
+        </div>
+        
+        <div class="segment" data-start="115.1">
+          <span class="timestamp">[00:01:55.100]</span>
+          <span class="text">gonna tell a l Never</span>
+        </div>
+        
+        <div class="segment" data-start="128.52">
+          <span class="timestamp">[00:02:08.520]</span>
+          <span class="text">gonna give Never gonna give Never</span>
+        </div>
+        
+        <div class="segment" data-start="132.76">
+          <span class="timestamp">[00:02:12.760]</span>
+          <span class="text">gonna give Never gonna give We&#39;ve</span>
+        </div>
+        
+        <div class="segment" data-start="137.08">
+          <span class="timestamp">[00:02:17.080]</span>
+          <span class="text">known each other for so long your</span>
+        </div>
+        
+        <div class="segment" data-start="141.2">
+          <span class="timestamp">[00:02:21.200]</span>
+          <span class="text">heart&#39;s been aching but you&#39;re too shy to</span>
+        </div>
+        
+        <div class="segment" data-start="144.32">
+          <span class="timestamp">[00:02:24.320]</span>
+          <span class="text">say it&#39;s sad we both know what&#39;s been going</span>
+        </div>
+        
+        <div class="segment" data-start="147.84">
+          <span class="timestamp">[00:02:27.840]</span>
+          <span class="text">on. We know the game and we&#39;re</span>
+        </div>
+        
+        <div class="segment" data-start="151.52">
+          <span class="timestamp">[00:02:31.520]</span>
+          <span class="text">gonna play it. I just</span>
+        </div>
+        
+        <div class="segment" data-start="154.96">
+          <span class="timestamp">[00:02:34.960]</span>
+          <span class="text">wanna tell you how I&#39;m feel understand</span>
+        </div>
+        
+        <div class="segment" data-start="161.18">
+          <span class="timestamp">[00:02:41.180]</span>
+          <span class="text">Never gonna give you up never gonna let</span>
+        </div>
+        
+        <div class="segment" data-start="164.26">
+          <span class="timestamp">[00:02:44.260]</span>
+          <span class="text">you down Never gonna run around and</span>
+        </div>
+        
+        <div class="segment" data-start="167.82">
+          <span class="timestamp">[00:02:47.820]</span>
+          <span class="text">desert you Never gonna make you</span>
+        </div>
+        
+        <div class="segment" data-start="170.98">
+          <span class="timestamp">[00:02:50.980]</span>
+          <span class="text">cry I&#39;m gonna say goodbye Never</span>
+        </div>
+        
+        <div class="segment" data-start="174.22">
+          <span class="timestamp">[00:02:54.220]</span>
+          <span class="text">gonna tell a lie and hurt you</span>
+        </div>
+        
+        <div class="segment" data-start="178.06">
+          <span class="timestamp">[00:02:58.060]</span>
+          <span class="text">Never gonna give you up never gonna let</span>
+        </div>
+        
+        <div class="segment" data-start="181.18">
+          <span class="timestamp">[00:03:01.180]</span>
+          <span class="text">you down Never gonna run around and</span>
+        </div>
+        
+        <div class="segment" data-start="184.7">
+          <span class="timestamp">[00:03:04.700]</span>
+          <span class="text">desert you Never gonna make you</span>
+        </div>
+        
+        <div class="segment" data-start="187.9">
+          <span class="timestamp">[00:03:07.900]</span>
+          <span class="text">cry Never gon tell</span>
+        </div>
+        
+        <div class="segment" data-start="191.88">
+          <span class="timestamp">[00:03:11.880]</span>
+          <span class="text">a lie and hurt you Never</span>
+        </div>
+        
+        <div class="segment" data-start="195.36">
+          <span class="timestamp">[00:03:15.360]</span>
+          <span class="text">going to give you up Never going to let you</span>
+        </div>
+        
+        <div class="segment" data-start="198.52">
+          <span class="timestamp">[00:03:18.520]</span>
+          <span class="text">down Never going to run around and</span>
+        </div>
+        
+        <div class="segment" data-start="201.64">
+          <span class="timestamp">[00:03:21.640]</span>
+          <span class="text">desert you Never going to make you</span>
+        </div>
+        
+        <div class="segment" data-start="204.76">
+          <span class="timestamp">[00:03:24.760]</span>
+          <span class="text">cry Never going to say goodbye Never</span>
+        </div>
+        
+        <div class="segment" data-start="208.0">
+          <span class="timestamp">[00:03:28.000]</span>
+          <span class="text">going to.</span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const player = document.getElementById('player');
+    const segmentsContainer = document.getElementById('segmentsContainer');
+    const segments = Array.from(document.querySelectorAll('.segment')).map(el => ({
+      el,
+      start: parseFloat(el.dataset.start || 0)
+    }));
+
+    segments.forEach(s => {
+      s.el.addEventListener('click', e => {
+        player.currentTime = s.start;
+        player.play();
+      });
+    });
+
+    function highlight() {
+    const t = player.currentTime;
+    let active = null;
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+      const next = segments[i + 1];
+      if (t >= s.start && (!next || t < next.start)) {
+        active = s;
+        break;
+      }
+    }
+    segments.forEach(s => s.el.classList.toggle('active', s === active));
+    if (active) {
+      const container = document.querySelector('.transcript');
+      const rect = active.el.offsetTop;
+      const containerScroll = container.scrollTop;
+      const containerHeight = container.clientHeight;
+
+      if (rect < containerScroll || rect > containerScroll + containerHeight - active.el.clientHeight) {
+        container.scrollTo({
+          top: rect - containerHeight / 2,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+
+    player.addEventListener('timeupdate', highlight);
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'ArrowLeft') player.currentTime = Math.max(0, player.currentTime - 10);
+      if (e.code === 'ArrowRight') player.currentTime = Math.min(player.duration, player.currentTime + 10);
+    });
+
+    const searchBox = document.getElementById('searchBox');
+    searchBox.addEventListener('input', () => {
+      const query = searchBox.value.toLowerCase();
+      segments.forEach(s => {
+        const visible = s.el.querySelector('.text').textContent.toLowerCase().includes(query);
+        s.el.style.display = visible ? '' : 'none';
+      });
+    });
+
+
+    highlight();
+  </script>
+</body>
+
+</html>
