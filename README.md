@@ -16,6 +16,10 @@ A Python package for transcribing videos/audios to text using various speech-to-
 
 ## Installation
 
+```bash
+pip install vid2txt
+```
+
 Install from source:
 
 ```bash
